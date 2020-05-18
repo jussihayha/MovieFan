@@ -26,6 +26,8 @@ export default function SearchScreen({ navigation }) {
     }
   };
 
+  
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Movie finder</Text>
