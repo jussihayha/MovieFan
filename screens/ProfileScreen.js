@@ -28,7 +28,6 @@ export default function ProfileScreen({ navigation }) {
         setLastName(data.lastname);
         setMode(data.mode);
         setLanguage(data.language);
-        console.log(data);
       });
   };
 
