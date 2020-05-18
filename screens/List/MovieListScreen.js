@@ -1,27 +1,25 @@
 import * as React from "react";
-import {
-  View,
-  StyleSheet,
-  Alert,
-} from "react-native";
+import { View, StyleSheet, Alert } from "react-native";
 import { ListItem } from "react-native-elements";
 import { useEffect, useState } from "react";
 import firebase, { db } from "../../config/Firebase";
 
 export default function MovieListScreen({ navigation, route }) {
   const [movies, setMovies] = useState("");
-
+  const { list } = route.params;
   const user = firebase.auth().currentUser;
   const uid = user.uid;
 
   useEffect(() => {
-    getList();
+    getMovies();
   }, []);
 
-  const getList = () => {
+  const getMovies = () => {
     db.ref("users")
       .child(uid)
       .child("lists/")
+      .child(list.id)
+      .child("movies")
       .on("value", (snapshot) => {
         let data = [];
 
@@ -36,33 +34,37 @@ export default function MovieListScreen({ navigation, route }) {
   };
 
   const deleteMovie = (movie) => {
-    console.log(movie);
     db.ref("users").child(uid).child("list/").child(movie).remove();
     Alert.alert(`Wanna delete ${movie}`);
-    
+
     getList();
   };
 
   return (
     <View style={styles.cards}>
-      {Object.values(movies).map((movie, index) => {
-        return (
-          <ListItem
-            key={index}
-            title={movie.movie.title}
-            leftAvatar={{
-              source: {
-                uri: `http://image.tmdb.org/t/p/original${movie.movie.poster_path}`,
-              },
-            }}
-            bottomDivider={true}
-            onPress={() =>
-              navigation.navigate("Details", { movie: movie })
-            }
-            onLongPress={() => deleteMovie(movie.id)}
-          />
-        );
-      })}
+      {movies === null
+        ? null
+        : Object.values(movies).map((movie, index) => {
+            return (
+              <ListItem
+                key={index}
+                title={movie.movie.title}
+                leftAvatar={{
+                  source: {
+                    uri: `http://image.tmdb.org/t/p/original${movie.movie.poster_path}`,
+                  },
+                }}
+                bottomDivider={true}
+                onPress={() =>
+                  navigation.navigate("Details", {
+                    movie: movie.movie,
+                    onList: true,
+                  })
+                }
+                onLongPress={() => deleteMovie(movie.movie.id)}
+              />
+            );
+          })}
     </View>
   );
 }
