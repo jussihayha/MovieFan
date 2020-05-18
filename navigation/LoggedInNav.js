@@ -21,26 +21,25 @@ import HomeScreen from "../screens/HomeScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 
-// Stack imports 
+// Stack imports
 import MovieListScreen from "../screens/List/MovieListScreen";
 import MovieDetailsScreen from "../screens/Search/MovieDetailsScreen";
+import ActorDetailsScreen from "../screens/Search/ActorDetailsScreen";
+
+import { Translations } from "../components/lang/Translations"; 
 
 export default function LoggedInNav() {
   const Stack = createStackNavigator();
   const Drawer = createDrawerNavigator();
   const Tab = createBottomTabNavigator();
 
-  const logout = async () => {
-    try {
-      await firebase.auth().signOut();
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  
+
 
   const TabComponent = () => {
     return (
       <Tab.Navigator
+        initialRouteName="Home"
         tabBarOptions={{
           inactiveTintColor: "black",
           activeBackgroundColor: "black",
@@ -80,7 +79,22 @@ export default function LoggedInNav() {
           inactiveTintColor: "#000",
           inactiveBackgroundColor: "#FFF",
         }}
-        screenOptions={{}}
+        screenOptions={({ route }) => ({
+          drawerIcon: ({ focused, color, size }) => {
+            let iconName;
+            size = 34;
+
+            if (route.name === "Home") {
+              iconName = "ios-home";
+            } else if (route.name === "Settings") {
+              iconName = "ios-settings";
+            } else if (route.name === "Profile") {
+              iconName = "ios-person";
+            }
+
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+        })}
       >
         <Drawer.Screen name="Home" component={TabComponent} />
         <Drawer.Screen name="Settings" component={SettingsScreen} />
@@ -122,6 +136,7 @@ export default function LoggedInNav() {
         <Stack.Screen name="TabComponent" component={TabComponent} />
         <Stack.Screen name="Details" component={MovieDetailsScreen} />
         <Stack.Screen name="MovieList" component={MovieListScreen} />
+        <Stack.Screen name="Actor" component={ActorDetailsScreen} />
       </Stack.Navigator>
     );
   };
