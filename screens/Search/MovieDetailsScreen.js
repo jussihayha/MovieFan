@@ -9,44 +9,34 @@ import {
   Alert,
   Picker,
 } from "react-native";
-
+import { WebView } from "react-native-webview";
+import { Video } from "expo-av";
+import { MOVIE_KEY } from "react-native-dotenv";
 import { Button, ListItem } from "react-native-elements";
 import firebase, { db } from "../../config/Firebase";
 export default function MovieDetailsScreen({ route, navigation }) {
   const { movie } = route.params;
   const [lists, setLists] = useState("");
   const [list, setList] = useState("");
-
-  let user = firebase.auth().currentUser;
-  let uid = user.uid;
+  const [trailer, setTrailer] = useState("");
 
   useEffect(() => {
-    getLists();
-  }, []);
+    getTrailer();
+  }, [movie.id]);
 
-  const addToList = () => {
-  
-    db.ref("users").child(uid).child("lists").child(list).push(movie)
-
-    Alert.alert("Movie added to your list.");
-  };
-
-  const getLists = () => {
-    db.ref("users")
-      .child(uid)
-      .child("lists/")
-      .on("value", (snapshot) => {
-        let data = [];
-        snapshot.forEach((child) => {
-          data.push({
-            id: child.key,
-            list: child.val(),
-          });
-        });
-        setLists(data)
-        console.log(lists)
+  const getTrailer = () => {
+    const url = `https://api.themoviedb.org/3/movie/${movie.id}/videos?api_key=${MOVIE_KEY}&language=en-US`;
+    fetch(url)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        setTrailer(Object.values(responseJson.results)[0]);
+      })
+      .catch((error) => {
+        Alert.alert(error.message);
       });
   };
+
+  console.log(trailer.key);
 
   return (
     <View style={styles.container}>
@@ -66,15 +56,33 @@ export default function MovieDetailsScreen({ route, navigation }) {
         <Picker
           mode="dropdown"
           selectedValue={list}
-          style={{ width: 200, color: "black", backgroundColor: "white" }}
           itemStyle={{ color: "white" }}
           onValueChange={(list) => setList(list)}
         >
           {Object.values(lists).map((list, index) => {
-            return <Picker.Item key={index} label={list.id} value={list.id} />
+            return (
+              <Picker.Item key={index} label={list.list.name} value={list.id} />
+            );
           })}
         </Picker>
-        <Button title="Add to watchlist" onPress={addToList} />
+        {trailer == undefined ? null :
+          <WebView
+            source={{
+              uri: `https://www.youtube.com/watch?v=${trailer.key}`,
+            }}
+            rate={1.0}
+            volume={1.0}
+            isMuted={false}
+            isLooping
+            resizeMode="cover"
+            shouldPlay
+            style={{
+              width: 400,
+              height: 500,
+              backgroundColor: "white",
+            }}
+            useNativeControls
+          />}
       </ScrollView>
     </View>
   );
@@ -85,6 +93,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000000",
     padding: 8,
+    justifyContent: "center",
+    textAlign: "center",
   },
   paragraph: {
     margin: 24,
