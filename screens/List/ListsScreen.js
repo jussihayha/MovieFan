@@ -28,15 +28,27 @@ export default function ListsScreen({ navigation }) {
             list: child.val(),
           });
         });
+        
         setLists(data);
         console.log(data);
       });
   };
 
   const deleteList = (list) => {
-    console.log(list);
-    db.ref("users").child(uid).child("lists/").child(list).remove();
-    Alert.alert(`Wanna delete ${list}`);
+    Alert.alert(
+      "Confirm deletion",
+      `Are you sure you want to delete ${list.list}?`,
+
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "OK",
+          onPress: () =>
+            db.ref("users").child(uid).child("lists/").child(list.id).remove(),
+        },
+      ],
+      { cancellable: true }
+    );
 
     getLists();
   };
@@ -45,9 +57,12 @@ export default function ListsScreen({ navigation }) {
     let user = firebase.auth().currentUser;
     let uid = user.uid;
 
-      db.ref("users").child(uid).child("lists").child(`${name}`).set(name)
+    db.ref("users").child(uid).child("lists").push({
+      name: name,
+      movies: [],
+    });
 
-    Alert.alert("Movie added to your list.");
+    Alert.alert(`Added new list ${name}`);
   };
 
   return (
@@ -68,10 +83,10 @@ export default function ListsScreen({ navigation }) {
           return (
             <ListItem
               key={index}
-              title={list.list}
+              title={list.list.name}
               bottomDivider={true}
-              onPress={() => navigation.navigate("Details", { list: list })}
-              onLongPress={() => deleteList(list.id)}
+              onPress={() => navigation.navigate("MovieList", { list })}
+              onLongPress={() => deleteList(list)}
             />
           );
         })}
