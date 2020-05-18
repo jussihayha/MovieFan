@@ -1,11 +1,9 @@
 import * as React from "react";
-
 import { View, Switch, Text } from "react-native";
 import { useState } from "react";
-import * as Localization from "expo-localization";
 import i18n from "i18n-js";
 
-export default function SettingsScreen({ navigation }) {
+export default function SettingsScreen({}) {
   const [value, setValue] = useState(0);
 
   const en = {
@@ -20,21 +18,14 @@ export default function SettingsScreen({ navigation }) {
     finnish: "Suomeksi",
   };
   i18n.fallbacks = true;
-  i18n.translations = { fi, en }
-
-  
-
-  console.log(i18n.locale);
+  i18n.translations = { fi, en };
 
   if (value) {
-
-    i18n.locale = "fi";
-
+    i18n.local = "fi";
+    console.log(value);
   } else {
     i18n.locale = "en";
   }
-
-  console.log(Localization.locale);
 
   return (
     <View>
