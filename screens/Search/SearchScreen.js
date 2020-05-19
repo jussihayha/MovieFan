@@ -61,7 +61,7 @@ export default function SearchScreen({ navigation }) {
                 rightSubtitle={movie.vote_average == "0," ? `Rating: ${movie.vote_average}` : null } 
               
               bottomDivider={true}
-                onPress={() => navigation.navigate("Details", { movie: movie })}
+                onPress={() => navigation.navigate("Movie details", { movie: movie })}
                 onLongPress={() => console.log(movie)}
             />
           );
