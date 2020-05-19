@@ -15,6 +15,7 @@ export default function MovieListScreen({ navigation, route }) {
   }, []);
 
   const getMovies = () => {
+
     db.ref("users")
       .child(uid)
       .child("lists/")
@@ -34,10 +35,10 @@ export default function MovieListScreen({ navigation, route }) {
   };
 
   const deleteMovie = (movie) => {
-    db.ref("users").child(uid).child("list/").child(movie).remove();
-    Alert.alert(`Wanna delete ${movie}`);
-
-    getList();
+    db.ref("users").child(uid).child("lists/").child(list.id).child("movies/").child(movie.id).remove();
+    Alert.alert(`Wanna delete ${movie.movie.title}`);
+    console.log(movie);
+    getMovies();
   };
 
   return (
@@ -56,12 +57,12 @@ export default function MovieListScreen({ navigation, route }) {
                 }}
                 bottomDivider={true}
                 onPress={() =>
-                  navigation.navigate("Details", {
+                  navigation.navigate("Movie details", {
                     movie: movie.movie,
                     onList: true,
                   })
                 }
-                onLongPress={() => deleteMovie(movie.movie.id)}
+                onLongPress={() => deleteMovie(movie)}
               />
             );
           })}
