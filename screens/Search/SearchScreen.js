@@ -1,15 +1,17 @@
 import * as React from "react";
-import { ScrollView } from 'react-native';
+import { ScrollView } from "react-native";
 import { useState } from "react";
 import { StyleSheet, View, Alert } from "react-native";
 import { MOVIE_KEY } from "react-native-dotenv";
-
+import * as Localization from "expo-localization";
+import { en, fi } from "../../components/lang/Translations";
+import i18n from "i18n-js";
 import { Button, Input, Text, ListItem } from "react-native-elements";
 
 export default function SearchScreen({ navigation }) {
   const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
-
+  console.log();
   const getMovies = () => {
     if (query === null || query == "") {
       Alert.alert("Query cannot be blank");
@@ -26,7 +28,21 @@ export default function SearchScreen({ navigation }) {
     }
   };
 
-  
+  const getPeople = () => {
+    if (query === null || query == "") {
+      Alert.alert("Query cannot be blank");
+    } else {
+      const url = `https://api.themoviedb.org/3/search/movie?api_key=${MOVIE_KEY}&language=fi-FI&query=${query}&page=1&include_adult=false`;
+      fetch(url)
+        .then((response) => response.json())
+        .then((responseJson) => {
+          setMovies(responseJson.results);
+        })
+        .catch((error) => {
+          Alert.alert(error.message);
+        });
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -46,10 +62,9 @@ export default function SearchScreen({ navigation }) {
         />
       </View>
       <View style={styles.cards}>
-      <ScrollView>
+        <ScrollView>
           {movies.map((movie, index) => {
             return (
-            
               <ListItem
                 key={index}
                 title={movie.title}
@@ -58,14 +73,19 @@ export default function SearchScreen({ navigation }) {
                     uri: `http://image.tmdb.org/t/p/original${movie.poster_path}`,
                   },
                 }}
-                rightSubtitle={movie.vote_average == "0," ? `Rating: ${movie.vote_average}` : null } 
-              
-              bottomDivider={true}
-                onPress={() => navigation.navigate("Movie details", { movie: movie })}
+                rightSubtitle={
+                  movie.vote_average == "0,"
+                    ? `Rating: ${movie.vote_average}`
+                    : null
+                }
+                bottomDivider={true}
+                onPress={() =>
+                  navigation.navigate("Movie details", { movie: movie })
+                }
                 onLongPress={() => console.log(movie)}
-            />
-          );
-        })}
+              />
+            );
+          })}
         </ScrollView>
       </View>
     </View>
