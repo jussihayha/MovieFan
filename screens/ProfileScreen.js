@@ -1,8 +1,11 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { View, Button, Text, Alert } from "react-native";
+import { View, Text, Alert, StyleSheet, Dimensions } from "react-native";
+import { Input, Button } from "react-native-elements";
+
 import firebase, { db } from "../config/Firebase";
-import { Input } from "react-native-elements";
+import { en, fi } from "../components/lang/Translations";
+import i18n from "i18n-js";
 
 export default function ProfileScreen({ navigation }) {
   const [firstname, setFirstName] = useState("");
@@ -12,7 +15,7 @@ export default function ProfileScreen({ navigation }) {
 
   let user = firebase.auth().currentUser;
   let uid = user.uid;
-
+  i18n.translations = { fi, en };
   useEffect(() => {
     getUser();
   }, []);
@@ -50,26 +53,89 @@ export default function ProfileScreen({ navigation }) {
     }
   };
 
+  if (language == "en") {
+    i18n.locale = "en";
+  } else {
+    i18n.locale = "fi";
+  }
+
   return (
-    <View style={{ flex: 1, justifyContent: "space-between" }}>
-      <View>
-        <Text style={{ fontWeight: "bold", fontSize: 32 }}>Profile</Text>
-      </View>
-      <View>
+    <View style={styles.container}>
+      <Text style={styles.header}>Profile</Text>
+
+      <View style={styles.settings}>
         <Input
-          label="Firstname"
+          label={i18n.t("firstname")}
           value={firstname}
           onChangeText={(firstname) => setFirstName(firstname)}
-        ></Input>
+          inputStyle={{ color: "white" }}
+          containerStyle={styles.input}
+        />
         <Input
-          label="Lastname"
+          label={i18n.t("lastname")}
           value={lastname}
           onChangeText={(lastname) => setLastName(lastname)}
-        ></Input>
-        <Button title="Save changes" onPress={saveChanges} />
+          inputStyle={{ color: "white" }}
+          containerStyle={styles.input}
+        />
+        <Button
+          buttonStyle={styles.saveChanges}
+          title={i18n.t("save")}
+          onPress={saveChanges}
+        />
       </View>
 
-      <Button title="Logout" onPress={logout} />
+      <Button
+        buttonStyle={styles.logoutBtn}
+        title={i18n.t("logout")}
+        onPress={logout}
+      />
     </View>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "space-around",
+    backgroundColor: "black",
+    color: "white",
+  },
+
+  header: {
+    color: "white",
+    fontSize: 32,
+  },
+
+  settings: {
+    justifyContent: "space-evenly",
+  },
+
+  saveChanges: {
+    marginTop: 30,
+    marginBottom: 20,
+    paddingVertical: 5,
+    alignItems: "center",
+    backgroundColor: "#F6820D",
+    borderColor: "#F6820D",
+    borderWidth: 1,
+    borderRadius: 5,
+    width: 200,
+  },
+
+  logoutBtn: {
+    marginTop: 30,
+    marginBottom: 20,
+    paddingVertical: 5,
+    alignItems: "center",
+    backgroundColor: "#ff0000",
+    borderColor: "#ff0000",
+    borderWidth: 1,
+    borderRadius: 5,
+    width: 200,
+  },
+
+  input: {
+    width: 200,
+  }
+});
