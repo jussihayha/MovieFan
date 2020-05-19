@@ -28,6 +28,9 @@ export const en = {
   password: "Password",
   signup: "Signup",
   logout: "Logout",
+  add_to_list: "Add movie to list",
+  movies: "Movies",
+  people: "People"
 };
 
 export const fi = {
@@ -60,6 +63,9 @@ export const fi = {
   password: "Salasana",
   signup: "Rekisteröidy",
   logout: "Kirjaudu ulos",
+  add_to_list: "Lisää elokuva listalle",
+  movies: "Elokuvat",
+  people: "Ihmiset"
 };
 
 
