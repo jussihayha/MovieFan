@@ -1,33 +1,28 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { View, StyleSheet, ScrollView, Image, Dimensions } from "react-native";
-
 import { Text, ListItem } from "react-native-elements";
-
 import { MOVIE_KEY } from "react-native-dotenv";
 
 export default function ActorDetailsScreen({ route, navigation }) {
   const { actor, profile } = route.params;
   const { known } = route.params;
-  const [actorDetails, setActorDetails] = useState("");
+  const [actorDetails, setActorDetails] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    getExtraData();
+    const fetchDetails = async () => {
+      const url = `https://api.themoviedb.org/3/person/${actor}/movie_credits?api_key=${MOVIE_KEY}&language=en-US&sort_by=release_date.asc`;
+      let response = await fetch(url);
+      response = await response.json();
+
+      setActorDetails(response.cast);
+      setLoading(false);
+    };
+    fetchDetails();
+
   }, []);
 
-  console.log(actorDetails);
-
-  const getExtraData = () => {
-    const url = `https://api.themoviedb.org/3/person/${actor}?api_key=${MOVIE_KEY}&language=fi-FI`;
-
-    fetch(url)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        setActorDetails(responseJson);
-      })
-      .catch((error) => {
-        Alert.alert(error.message);
-      });
-  };
 
   return (
     <View style={styles.container}>
@@ -42,34 +37,36 @@ export default function ActorDetailsScreen({ route, navigation }) {
             }}
           />
           <Text style={styles.paragraph}>Biography:</Text>
-          <Text style={styles.bio}>{actorDetails.biography}</Text>
         </ScrollView>
 
         <Text style={styles.header}> Popular actors at the moment </Text>
         <ScrollView>
-          {known.map((movie, index) => {
-            return (
-              <ListItem
-                key={index}
-                title={movie.title}
-                leftAvatar={{
-                  source: {
-                    uri: `http://image.tmdb.org/t/p/original${movie.poster_path}`,
-                  },
-                }}
-                rightSubtitle={
-                  movie.vote_average == "0,"
-                    ? `Rating: ${movie.vote_average}`
-                    : null
-                }
-                bottomDivider={true}
-                onPress={() =>
-                  navigation.navigate("Movie details", { movie: movie })
-                }
-                onLongPress={() => console.log(movie)}
-              />
-            );
-          })}
+          {loading
+            ? null
+            : actorDetails.map((movie, index) => {
+              return (
+                <ListItem
+                  key={index}
+                  title={movie.title}
+                  leftAvatar={{
+                    source: {
+                      uri: `http://image.tmdb.org/t/p/original${movie.poster_path}`,
+                    },
+                  }}
+                  rightSubtitle={
+                    movie.vote_average == "0,"
+                      ? null
+                      : `Rating: ${movie.vote_average}`
+                  }
+                  rightTitle={movie.release_date}
+                    bottomDivider={true}
+                    onPress={() =>
+                      navigation.navigate("Movie details", { movie: movie })
+                    }
+                    onLongPress={() => console.log(movie)}
+                  />
+                );
+              })}
         </ScrollView>
       </ScrollView>
     </View>
