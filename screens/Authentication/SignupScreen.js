@@ -5,8 +5,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   Text,
-  Picker,
+  Switch,
 } from "react-native";
+import { Picker } from "@react-native-community/picker";
 import { useState, useEffect } from "react";
 import firebase, { db } from "../../config/Firebase";
 import * as Localization from "expo-localization";
@@ -20,6 +21,7 @@ export default function SignupScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [language, setLanguage] = useState("en");
   const [errorMessage, setErrorMessage] = useState("");
+  const [value, setValue] = useState(true);
 
   const handleSignUp = () => {
     firebase
@@ -39,14 +41,24 @@ export default function SignupScreen({ navigation }) {
       .catch((error) => setErrorMessage(error.message));
   };
 
+  const changeLanguage = (value) => {
+    setValue(value);
+
+    if (value) {
+      setLanguage("en");
+    } else {
+      setLanguage("fi");
+    }
+  };
+
+  if (language == "fi") {
+    i18n.locale = "fi";
+  }
   if (language == "en") {
     i18n.locale = "en";
-  } else {
-    i18n.locale = "fi";
   }
 
   i18n.translations = { fi, en };
-
 
   return (
     <View style={styles.container}>
@@ -86,14 +98,15 @@ export default function SignupScreen({ navigation }) {
         placeholderTextColor="white"
         secureTextEntry={true}
       />
-      <Picker
-        style={{ width: 200, backgroundColor: "black", color: "white" }}
-        selectedValue={language}
-        onValueChange={(itemValue, itemIndex) => setLanguage(itemValue)}
-      >
-        <Picker.Item label={i18n.t("english")} value="en" />
-        <Picker.Item label={i18n.t("finnish")} value="fi" />
-      </Picker>
+      <View style={{ flexDirection: "row" }}>
+        <Text style={styles.text}>{i18n.t("finnish")}</Text>
+        <Switch
+          value={value}
+          onValueChange={changeLanguage}
+          trackColor={{ false: "#fff", true: "#F6820D" }}
+        />
+        <Text style={styles.text}>{i18n.t("english")}</Text>
+      </View>
       <TouchableOpacity style={styles.button} onPress={handleSignUp}>
         <Text style={styles.buttonText}>{i18n.t("signup")}</Text>
       </TouchableOpacity>
@@ -141,6 +154,11 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 24,
     fontWeight: "bold",
+    color: "white",
+  },
+
+  text: {
+    fontSize: 16,
     color: "white",
   },
 });
