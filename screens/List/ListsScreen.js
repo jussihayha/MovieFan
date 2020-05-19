@@ -4,6 +4,10 @@ import { ListItem, Input, Button } from "react-native-elements";
 import { useEffect, useState } from "react";
 import firebase, { db } from "../../config/Firebase";
 
+import { en, fi } from "../../components/lang/Translations";
+import i18n from "i18n-js";
+import * as Localization from "expo-localization";
+
 export default function ListsScreen({ navigation }) {
   const [lists, setLists] = useState("");
   const [list, setList] = useState("");
@@ -11,7 +15,7 @@ export default function ListsScreen({ navigation }) {
 
   const user = firebase.auth().currentUser;
   const uid = user.uid;
-
+  i18n.translations = { fi, en };
   useEffect(() => {
     getLists();
   }, []);
@@ -37,7 +41,7 @@ export default function ListsScreen({ navigation }) {
   const deleteList = (list) => {
     Alert.alert(
       "Confirm deletion",
-      `Are you sure you want to delete ${list.list}?`,
+      `Are you sure you want to delete ${list.list.name}?`,
 
       [
         { text: "Cancel", style: "cancel" },
@@ -70,7 +74,7 @@ export default function ListsScreen({ navigation }) {
       <Text style={styles.header}>Your lists</Text>
       <View style={styles.inputContainer}>
         <Input
-          placeholder="Add new list"
+          placeholder={i18n.t("add_list")}
           value={name}
           onChangeText={(name) => setName(name)}
           style={styles.input}
