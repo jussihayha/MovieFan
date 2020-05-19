@@ -42,7 +42,7 @@ export default function ProfileScreen({ navigation }) {
       language: language,
     });
 
-    Alert.alert("Changes saved!");
+    Alert.alert(i18n.t("changes"));
   };
 
   const logout = async () => {
@@ -52,12 +52,6 @@ export default function ProfileScreen({ navigation }) {
       console.error(e);
     }
   };
-
-  if (language == "en") {
-    i18n.locale = "en";
-  } else {
-    i18n.locale = "fi";
-  }
 
   return (
     <View style={styles.container}>
@@ -137,5 +131,5 @@ const styles = StyleSheet.create({
 
   input: {
     width: 200,
-  }
+  },
 });
