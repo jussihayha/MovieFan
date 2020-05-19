@@ -1,12 +1,26 @@
 import * as React from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity, TextInput, Alert } from "react-native";
 import { useState } from "react";
 import firebase from "../../config/Firebase";
-import { Button, Input, Text } from "react-native-elements";
+import { Button, Text } from "react-native-elements";
+import * as Localization from "expo-localization";
+import i18n from "i18n-js";
+import { en, fi } from "../../components/lang/Translations";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  i18n.locale = Localization.locale;
+
+  if (i18n.locale = "fi-FI") {
+    i18n.locale = "fi"
+  }
+
+  if (i18n.locale = "en-US") {
+    i18n.locale = "en";
+  }
+
+  i18n.translations = { fi, en };
 
   async function login() {
     try {
@@ -14,36 +28,36 @@ export default function LoginScreen({ navigation }) {
         .auth()
         .signInWithEmailAndPassword(email, password)
 
-        .catch((error) => console.log(error));
+        .catch((error) => Alert.alert(error));
     } catch (e) {
-      console.log("something went wrong");
+     
     }
   }
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}> MovieFan </Text>
-      <Input
+      <TextInput
         style={styles.inputBox}
         value={email}
         onChangeText={(email) => setEmail(email)}
-        placeholder="Email"
+        placeholder={i18n.t("email")}
         autoCapitalize="none"
-        inputStyle={{ color: "white" }}
+        placeholderTextColor="white"
       />
-      <Input
+      <TextInput
         style={styles.inputBox}
         value={password}
         onChangeText={(password) => setPassword(password)}
-        placeholder="Password"
+        placeholder={i18n.t("password")}
         secureTextEntry={true}
-        inputStyle={{ color: "white" }}
+        placeholderTextColor="white"
       />
       <TouchableOpacity style={styles.button} onPress={() => login()}>
-        <Text style={styles.buttonText}>Login</Text>
+        <Text style={styles.buttonText}>{i18n.t("login")}</Text>
       </TouchableOpacity>
       <Button
-        title="Don't have an account yet? Sign up"
+        title={i18n.t("register")}
         onPress={() => navigation.navigate("Signup")}
       />
     </View>
@@ -72,6 +86,7 @@ const styles = StyleSheet.create({
     borderColor: "#d3d3d3",
     borderBottomWidth: 1,
     textAlign: "center",
+    color: "white",
   },
   button: {
     marginTop: 30,
