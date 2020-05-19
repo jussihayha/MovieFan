@@ -1,21 +1,17 @@
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  ScrollView,
-  Alert,
-  Picker,
-} from "react-native";
+import { View, Text, StyleSheet, Image, ScrollView, Alert } from "react-native";
+import { Picker } from "@react-native-community/picker";
 
 import { MOVIE_KEY } from "react-native-dotenv";
 import { Button } from "react-native-elements";
 import YoutubePlayer from "react-native-youtube-iframe";
 import firebase, { db } from "../../config/Firebase";
+import { en, fi } from "../../components/lang/Translations";
+import i18n from "i18n-js";
+
 export default function MovieDetailsScreen({ route, navigation }) {
-  const { movie } = route.params;
+  const { movie, onList } = route.params;
   const [lists, setLists] = useState("");
   const [list, setList] = useState("");
   const [trailer, setTrailer] = useState("");
@@ -29,15 +25,9 @@ export default function MovieDetailsScreen({ route, navigation }) {
   useEffect(() => {
     getTrailer();
     getLists();
-
-    return () => {
-      trailerLoaded = true;
-      listLoaded = true;
-    };
   }, [movie.id]);
 
   const getTrailer = () => {
-    let trailerLoaded = false;
     const url = `https://api.themoviedb.org/3/movie/${movie.id}/videos?api_key=${MOVIE_KEY}&language=en-US`;
     fetch(url)
       .then((response) => response.json())
@@ -50,14 +40,17 @@ export default function MovieDetailsScreen({ route, navigation }) {
   };
 
   const addToList = () => {
-    console.log(list);
-   db.ref("users").child(uid).child("lists").child(list).child("movies").push(movie);
-    
+ 
+    db.ref("users")
+      .child(uid)
+      .child("lists")
+      .child(list)
+      .child("movies")
+      .push(movie);
   };
-  console.log(list);
+
 
   const getLists = () => {
-    let listLoaded = false;
     db.ref("users")
       .child(uid)
       .child("lists/")
@@ -71,7 +64,6 @@ export default function MovieDetailsScreen({ route, navigation }) {
         });
 
         setLists(data);
-      
       });
   };
 
@@ -90,15 +82,17 @@ export default function MovieDetailsScreen({ route, navigation }) {
             movie.overview
           )}
         </Text>
-        {lists == "" ? (
-          <Text style={styles.list}>Go create a list in the list section </Text>
-        ) : (
+      
+        {onList  ? (
+         null
+        ) : (<>
           <Picker
-            mode="dropdown"
+            mode="modal"
+            style={{ height: 50, width: 200 }}
             selectedValue={list}
             itemStyle={{ color: "black" }}
             style={{ backgroundColor: "white" }}
-            onValueChange={(list) => setList(list)}
+            onValueChange={(itemValue, itemIndex) => setList(itemValue)}
           >
             {Object.values(lists).map((list, index) => {
               return (
@@ -110,8 +104,8 @@ export default function MovieDetailsScreen({ route, navigation }) {
               );
             })}
           </Picker>
-        )}
-        <Button title="Add to list" onPress={addToList}></Button>
+          
+        <Button title={i18n.t("add_to_list")} onPress={addToList} /></>)}
         {trailer == null ? (
           <Text style="list">No trailer available</Text>
         ) : (
