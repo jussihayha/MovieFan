@@ -1,4 +1,5 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 
 import { View } from "react-native";
@@ -23,18 +24,38 @@ import ProfileScreen from "../screens/ProfileScreen";
 
 // Stack imports
 import MovieListScreen from "../screens/List/MovieListScreen";
-import MovieDetailsScreen from "../screens/Search/MovieDetailsScreen";
-import ActorDetailsScreen from "../screens/Search/ActorDetailsScreen";
-
-import { Translations } from "../components/lang/Translations"; 
-
+import MovieDetailsScreen from "../screens/Details/MovieDetailsScreen";
+import ActorDetailsScreen from "../screens/Details/ActorDetailsScreen";
+import PopularPeople from "../screens/PopularPeople";
+import PopularMovies from "../screens/PopularMovies";
+import { en, fi } from "../components/lang/Translations";
+import firebase, { db } from "../config/Firebase";
+import i18n from "i18n-js";
+import * as Localization from "expo-localization";
+i18n.translations = { fi, en };
 export default function LoggedInNav() {
   const Stack = createStackNavigator();
   const Drawer = createDrawerNavigator();
   const Tab = createBottomTabNavigator();
 
-  
+  const [language, setLanguage] = useState("");
 
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  const getUser = () => {
+    let user = firebase.auth().currentUser;
+    let uid = user.uid;
+    db.ref("users")
+      .child(uid)
+      .child("details")
+      .on("value", (snapshot) => {
+        const data = snapshot.val();
+
+        setLanguage(data.language);
+      });
+  };
 
   const TabComponent = () => {
     return (
@@ -51,8 +72,8 @@ export default function LoggedInNav() {
             let iconName;
             size = 34;
 
-            if (route.name === "Home") {
-              iconName = "ios-home";
+            if (route.name === "Start") {
+              iconName = "ios-film";
             } else if (route.name === "Search movies") {
               iconName = "ios-search";
             } else if (route.name === "My lists") {
@@ -63,9 +84,21 @@ export default function LoggedInNav() {
           },
         })}
       >
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Search movies" component={SearchScreen} />
-        <Tab.Screen name="My lists" component={ListsScreen} />
+        <Tab.Screen
+          name="Start"
+          options={{ title: i18n.t("start") }}
+          component={HomeScreen}
+        />
+        <Tab.Screen
+          name="Search movies"
+          options={{ title: i18n.t("search") }}
+          component={SearchScreen}
+        />
+        <Tab.Screen
+          name="My lists"
+          options={{ title: i18n.t("lists") }}
+          component={ListsScreen}
+        />
       </Tab.Navigator>
     );
   };
@@ -96,9 +129,21 @@ export default function LoggedInNav() {
           },
         })}
       >
-        <Drawer.Screen name="Home" component={TabComponent} />
-        <Drawer.Screen name="Settings" component={SettingsScreen} />
-        <Drawer.Screen name="Profile" component={ProfileScreen} />
+        <Drawer.Screen
+          name="Home"
+          options={{ title: i18n.t("home") }}
+          component={TabComponent}
+        />
+        <Drawer.Screen
+          name="Settings"
+          options={{ title: i18n.t("settings") }}
+          component={SettingsScreen}
+        />
+        <Drawer.Screen
+          name="Profile"
+          options={{ title: i18n.t("profile") }}
+          component={ProfileScreen}
+        />
       </Drawer.Navigator>
     );
   };
@@ -134,12 +179,20 @@ export default function LoggedInNav() {
           name="MovieFan"
         />
         <Stack.Screen name="TabComponent" component={TabComponent} />
-        <Stack.Screen name="Details" component={MovieDetailsScreen} />
+        <Stack.Screen name="Movie details" component={MovieDetailsScreen} />
         <Stack.Screen name="MovieList" component={MovieListScreen} />
-        <Stack.Screen name="Actor" component={ActorDetailsScreen} />
+        <Stack.Screen name="Actor details" component={ActorDetailsScreen} />
+        <Stack.Screen name="PopularMovies" component={PopularMovies} />
+        <Stack.Screen name="PopularPeople" component={PopularPeople} />
       </Stack.Navigator>
     );
   };
+
+  if (language == "en") {
+    i18n.locale = "en";
+  } else {
+    i18n.locale = "fi";
+  }
 
   return (
     <NavigationContainer>
