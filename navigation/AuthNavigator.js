@@ -12,13 +12,21 @@ export default function AuthNavigator() {
     setUser(result);
     if (initializing) setInitializing(false);
   }
-  useEffect(() => {
-    const authSubscriber = firebase
-      .auth()
-      .onAuthStateChanged(onAuthStateChanged);
+  let isMounted = false;
 
-    return authSubscriber;
-  }, []);
+  useEffect(() => {
+    if (!isMounted) {
+      const authSubscriber = firebase
+        .auth()
+        .onAuthStateChanged(onAuthStateChanged);
+      isMounted = true;
+      return authSubscriber;
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isMounted]);
 
   if (initializing) {
     return null;
