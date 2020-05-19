@@ -16,29 +16,27 @@ import { en, fi } from "../components/lang/Translations";
 import i18n from "i18n-js";
 
 export default function PopularMovies({ navigation }) {
-  const [movies, setMovies] = useState([]);
+    const [movies, setMovies] = useState([]);
+    const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getMovies();
-  }, [movies]);
-
-  const getMovies = () => {
-    const url = `https://api.themoviedb.org/3/trending/movie/week?api_key=${MOVIE_KEY}`;
-    fetch(url)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        setMovies(responseJson.results);
-      })
-      .catch((error) => {
-        Alert.alert(error.message);
-      });
-  };
+    const fetchMovies = async () => {
+      const url = `https://api.themoviedb.org/3/trending/movie/week?api_key=${MOVIE_KEY}`;
+      let response = await fetch(url);
+        response = await response.json();
+      
+        setMovies(response.results);
+        setLoading(false);
+    };
+    fetchMovies();
+      console.log(movies);
+  }, []);
 
   return (
     <View style={{ backgroundColor: "black" }}>
       <Text style={styles.header}>{i18n.t("popular_movies")}</Text>
       <ScrollView horizontal={true}>
-        {movies.map((movie, index) => {
+        {loading ? null : movies.map((movie, index) => {
           return (
             <TouchableOpacity
               onPress={() =>
@@ -59,7 +57,7 @@ export default function PopularMovies({ navigation }) {
                   />
 
                   <Text style={styles.title}>
-                    ({movie.release_date.substring(0, 4)})
+                    ({movie.release_date.substring(0, 4)}) Rating: {movie.vote_average}
                   </Text>
                 </View>
               </Card>

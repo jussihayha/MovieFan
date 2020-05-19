@@ -17,28 +17,26 @@ import i18n from "i18n-js";
 
 export default function PopularPeople({ navigation }) {
   const [people, setPeople] = useState([]);
+const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getPeople();
-  }, [people]);
-
-  const getPeople = () => {
-    const url = `https://api.themoviedb.org/3/trending/person/week?api_key=${MOVIE_KEY}`;
-    fetch(url)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        setPeople(responseJson.results);
-      })
-      .catch((error) => {
-        Alert.alert(error.message);
-      });
-  };
-
+    const fetchPeople = async () => {
+        const url = `https://api.themoviedb.org/3/trending/person/week?api_key=${MOVIE_KEY}`;
+      let response = await fetch(url);
+        response = await response.json();
+      
+        setPeople(response.results);
+        setLoading(false);
+    };
+    fetchPeople();
+   
+  }, []);
+    console.log(people);
   return (
     <View style={{ backgroundColor: "black" }}>
       <Text style={styles.header}>{i18n.t("popular_people")}</Text>
       <ScrollView horizontal={true}>
-        {people.map((actor, index) => {
+        {loading ? null : people.map((actor, index) => {
           return (
             <TouchableOpacity
               onPress={() =>
@@ -66,7 +64,7 @@ export default function PopularPeople({ navigation }) {
                       width: undefined,
                     }}
                   />
-                  <Text style={styles.title}>{actor.name}</Text>
+                          <Text style={styles.title}>{actor.name}, known for {actor.known_for_department}</Text>
                 </View>
               </Card>
             </TouchableOpacity>
