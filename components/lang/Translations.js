@@ -15,10 +15,12 @@ export const en = {
   home: "Home",
   search: "Search",
   lists: "My lists",
-  search_header: "Movie finder",
+  movie_search_header: "Movie finder",
+  people_search_header: "People finder",
   find_movie: "Find movies",
   lists_header: "Your lists",
   add_list: "Add new list",
+  new_list_added: "Added new list ",
   add: "Add",
   firstname: "Firstname",
   lastname: "Lastname",
@@ -30,7 +32,17 @@ export const en = {
   logout: "Logout",
   add_to_list: "Add movie to list",
   movies: "Movies",
-  people: "People"
+  people: "People",
+  forgotPassword: "Forgot password?",
+  reset_pw: "Enter your email to reset password",
+  password_message: "If you have registered with the email you have entered, check your mail.",
+  reset_pw_btn: "Reset password",
+  query_blank: "Query cannot be blank",
+  list_blank: "List name cannot be blank",
+  email_blank: "Email cannot be blank",
+  delete_title: "Confirm deletion",
+  confirm_deletion: "Are you sure you want to delete ",
+  cancel: "Cancel"
 };
 
 export const fi = {
@@ -50,10 +62,12 @@ export const fi = {
   home: "Koti",
   search: "Haku",
   lists: "Listat",
-  search_header: "Elokuvahaku",
+  movie_search_header: "Elokuvahaku",
+  people_search_header: "Henkilöhaku",
   find_movie: "Etsi hakusanalla",
   lists_header: "Listasi",
   add_list: "Lisää uusi lista",
+  new_list_added: "Uusi lisätty nimellä ",
   add: "Lisää",
   firstname: "Etunimi",
   lastname: "Sukunimi",
@@ -65,7 +79,17 @@ export const fi = {
   logout: "Kirjaudu ulos",
   add_to_list: "Lisää elokuva listalle",
   movies: "Elokuvat",
-  people: "Ihmiset"
+  people: "Ihmiset",
+  forgotPassword: "Unohditko salasanasi?",
+  reset_pw: "Syötä sähköpostisi salasanan nollausta varten",
+  password_message: "Tarkista sähköpostisi salasanan nollausta varten",
+  reset_pw_btn: "Nollaa salasana",
+  query_blank: "Hakusana ei voi olla tyhjä",
+  list_blank: "Listan nimi ei voi olla tyhjä",
+  email_blank: "Salasana ei voi olla tyhjä",
+  delete_title: "Vahvista poistaminen",
+  confirm_deletion: "Haluatko varmasti poistaa ",
+  cancel: "Peruuta",
 };
 
 
