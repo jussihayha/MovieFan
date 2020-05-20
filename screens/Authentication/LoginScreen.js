@@ -1,22 +1,31 @@
 import * as React from "react";
-import { View, StyleSheet, TouchableOpacity, TextInput, Alert } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+
+} from "react-native";
 import { useState } from "react";
 import firebase from "../../config/Firebase";
-import { Button, Text } from "react-native-elements";
+import { Button, Text, Input } from "react-native-elements";
 import * as Localization from "expo-localization";
 import i18n from "i18n-js";
 import { en, fi } from "../../components/lang/Translations";
+import { Ionicons, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [toggle, setToggle] = useState(true);
   i18n.locale = Localization.locale;
 
-  if (i18n.locale = "fi-FI") {
-    i18n.locale = "fi"
+  if ((i18n.locale = "fi-FI")) {
+    i18n.locale = "fi";
   }
 
-  if (i18n.locale = "en-US") {
+  if ((i18n.locale = "en-US")) {
     i18n.locale = "en";
   }
 
@@ -29,37 +38,76 @@ export default function LoginScreen({ navigation }) {
         .signInWithEmailAndPassword(email, password)
 
         .catch((error) => Alert.alert(error));
-    } catch (e) {
-     
-    }
+    } catch (e) {}
   }
+
+  const togglePassword = () => {
+    setToggle(toggle);
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}> MovieFan </Text>
-      <TextInput
-        style={styles.inputBox}
+      <Input
+        containerStyle={styles.inputBox}
         value={email}
         onChangeText={(email) => setEmail(email)}
         placeholder={i18n.t("email")}
-        autoCapitalize="none"
         placeholderTextColor="white"
+        inputStyle={{ color: "white" }}
+        leftIcon={<FontAwesome name="envelope-o" size={24} color="white" />}
       />
-      <TextInput
-        style={styles.inputBox}
+
+      <Input
+        containerStyle={styles.inputBox}
         value={password}
+        inputStyle={{ color: "white" }}
         onChangeText={(password) => setPassword(password)}
         placeholder={i18n.t("password")}
-        secureTextEntry={true}
+        secureTextEntry={toggle ? true : false}
         placeholderTextColor="white"
+        leftIcon={<FontAwesome name="lock" size={24} color="white" />}
+        rightIcon={
+          toggle ? (
+            <FontAwesome
+              name="eye"
+              size={24}
+              color="white"
+              onPress={() => {
+                setToggle(!toggle);
+                console.log(toggle);
+              }}
+            />
+          ) : (
+            <FontAwesome
+              name="eye-slash"
+              size={24}
+              color="white"
+              onPress={() => {
+                setToggle(!toggle);
+                console.log(toggle);
+              }}
+            />
+          )
+        }
       />
+
       <TouchableOpacity style={styles.button} onPress={() => login()}>
         <Text style={styles.buttonText}>{i18n.t("login")}</Text>
       </TouchableOpacity>
       <Button
+        buttonStyle={styles.registerBtn}
         title={i18n.t("register")}
         onPress={() => navigation.navigate("Signup")}
       />
+
+      <View style={styles.forgot}>
+        <Button
+          buttonStyle={styles.forgotBtn}
+          title={i18n.t("forgotPassword")}
+          onPress={() => navigation.navigate("ForgotPassword")}
+        />
+      </View>
     </View>
   );
 }
@@ -67,7 +115,7 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#282D4F",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -83,8 +131,7 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 15,
     fontSize: 16,
-    borderColor: "#d3d3d3",
-    borderBottomWidth: 1,
+
     textAlign: "center",
     color: "white",
   },
@@ -93,8 +140,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingVertical: 5,
     alignItems: "center",
-    backgroundColor: "#F6820D",
-    borderColor: "#F6820D",
+    backgroundColor: "#FF6C00",
+    borderColor: "#FF6C00",
     borderWidth: 1,
     borderRadius: 5,
     width: 200,
@@ -106,5 +153,33 @@ const styles = StyleSheet.create({
   },
   buttonSignup: {
     fontSize: 12,
+  },
+
+  forgot: {
+    bottom: 0,
+    position: "absolute",
+  },
+
+  forgotBtn: {
+    marginTop: 30,
+    marginBottom: 20,
+    paddingVertical: 5,
+    alignItems: "center",
+    backgroundColor: "#A0204C",
+    borderColor: "#A0204C",
+    borderWidth: 1,
+    borderRadius: 5,
+    width: 200,
+  },
+
+  registerBtn: {
+    marginBottom: 20,
+    paddingVertical: 5,
+    alignItems: "center",
+    backgroundColor: "#23103A",
+    borderColor: "#23103A",
+    borderWidth: 1,
+    borderRadius: 5,
+    width: 200,
   },
 });
