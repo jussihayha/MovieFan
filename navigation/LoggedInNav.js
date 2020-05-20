@@ -106,7 +106,7 @@ export default function LoggedInNav() {
   const DrawerComponent = () => {
     return (
       <Drawer.Navigator
-        drawerStyle={{ backgroundColor: "#000" }}
+        drawerStyle={{ backgroundColor: "#23103A" }}
         drawerContentOptions={{
           activeTintColor: "#FFF",
           inactiveTintColor: "#000",
