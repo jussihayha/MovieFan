@@ -16,54 +16,55 @@ import { en, fi } from "../components/lang/Translations";
 import i18n from "i18n-js";
 
 export default function PopularMovies({ navigation }) {
-    const [movies, setMovies] = useState([]);
-    const [loading, setLoading] = useState(true);
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchMovies = async () => {
       const url = `https://api.themoviedb.org/3/trending/movie/week?api_key=${MOVIE_KEY}`;
       let response = await fetch(url);
-        response = await response.json();
-      
-        setMovies(response.results);
-        setLoading(false);
+      response = await response.json();
+
+      setMovies(response.results);
+      setLoading(false);
     };
     fetchMovies();
-      console.log(movies);
+    console.log(movies);
   }, []);
 
   return (
-    <View style={{ backgroundColor: "black" }}>
+    <View style={{ backgroundColor: "#282D4F" }}>
       <Text style={styles.header}>{i18n.t("popular_movies")}</Text>
       <ScrollView horizontal={true}>
-        {loading ? null : movies.map((movie, index) => {
-          return (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("Movie details", { movie: movie })
-              }
-              key={index}
-            >
-              <Card containerStyle={styles.cards}>
-                <View key={index} style={styles.movies}>
-                  <Image
-                    style={styles.images}
-                    resizeMode="contain"
-                    source={{
-                      uri: `http://image.tmdb.org/t/p/original${movie.poster_path}`,
-                      height: undefined,
-                      width: undefined,
-                    }}
-                  />
+        {loading
+          ? null
+          : movies.map((movie, index) => {
+              return (
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("Movie details", { movie: movie })
+                  }
+                  key={index}
+                >
+                  <Card containerStyle={styles.cards}>
+                    <View key={index}>
+                      <Image
+                        style={styles.movies}
+                        resizeMode= "contain"
+                        source={{
+                          uri: `http://image.tmdb.org/t/p/original${movie.poster_path}`,
+                        }}
+                      />
 
-                  <Text style={styles.title}>
-                    ({movie.release_date.substring(0, 4)}) Rating: {movie.vote_average}
-                  </Text>
-                </View>
-              </Card>
-            </TouchableOpacity>
-          );
-        })}
+                      <Text style={styles.title}>
+                        ({movie.release_date.substring(0, 4)}) Rating:{" "}
+                        {movie.vote_average}
+                      </Text>
+                    </View>
+                  </Card>
+                </TouchableOpacity>
+              );
+            })}
       </ScrollView>
     </View>
   );
@@ -72,7 +73,7 @@ export default function PopularMovies({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#282D4F",
   },
 
   header: {
@@ -94,12 +95,7 @@ const styles = StyleSheet.create({
 
   movies: {
     width: 300,
-    height: 400,
-    backgroundColor: "#000",
-  },
-  actors: {
-    width: 300,
-    height: 400,
+    height: 300,
     backgroundColor: "#000",
   },
 

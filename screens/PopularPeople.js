@@ -17,59 +17,56 @@ import i18n from "i18n-js";
 
 export default function PopularPeople({ navigation }) {
   const [people, setPeople] = useState([]);
-const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPeople = async () => {
-        const url = `https://api.themoviedb.org/3/trending/person/week?api_key=${MOVIE_KEY}`;
+      const url = `https://api.themoviedb.org/3/trending/person/week?api_key=${MOVIE_KEY}`;
       let response = await fetch(url);
-        response = await response.json();
-      
-        setPeople(response.results);
-        setLoading(false);
+      response = await response.json();
+
+      setPeople(response.results);
+      setLoading(false);
     };
     fetchPeople();
-   
   }, []);
-    console.log(people);
+  console.log(people);
   return (
-    <View style={{ backgroundColor: "black" }}>
+    <View style={{ backgroundColor: "#282D4F" }}>
       <Text style={styles.header}>{i18n.t("popular_people")}</Text>
       <ScrollView horizontal={true}>
-        {loading ? null : people.map((actor, index) => {
-          return (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("Actor details", {
-                  actor: actor.id,
-                  profile: actor.profile_path,
-                  known: actor.known_for,
-                  overview: actor.overview,
-                })
-              }
-              key={index}
-              style={{
-                backgroundColor: "black",
-                borderColor: "black",
-              }}
-            >
-              <Card containerStyle={styles.cards}>
-                <View>
-                  <Image
-                    style={styles.actors}
-                    resizeMode="contain"
-                    source={{
-                      uri: `http://image.tmdb.org/t/p/original${actor.profile_path}`,
-                      height: undefined,
-                      width: undefined,
-                    }}
-                  />
-                          <Text style={styles.title}>{actor.name}, known for {actor.known_for_department}</Text>
-                </View>
-              </Card>
-            </TouchableOpacity>
-          );
-        })}
+        {loading
+          ? null
+          : people.map((actor, index) => {
+              return (
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("Actor details", {
+                      actor: actor.id,
+                      profile: actor.profile_path,
+                      known: actor.known_for,
+                      overview: actor.overview,
+                    })
+                  }
+                  key={index}
+                >
+                  <Card containerStyle={styles.cards}>
+                    <View key={index}>
+                      <Image
+                        style={styles.movies}
+                        resizeMode="contain"
+                        source={{
+                          uri: `http://image.tmdb.org/t/p/original${actor.profile_path}`,
+                          height: undefined,
+                          width: undefined,
+                        }}
+                      />
+                      <Text style={styles.title}>{actor.name}</Text>
+                    </View>
+                  </Card>
+                </TouchableOpacity>
+              );
+            })}
       </ScrollView>
     </View>
   );
@@ -78,7 +75,7 @@ const [loading, setLoading] = useState(true);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#282D4F",
   },
 
   header: {
@@ -100,12 +97,7 @@ const styles = StyleSheet.create({
 
   movies: {
     width: 300,
-    height: 400,
-    backgroundColor: "#000",
-  },
-  actors: {
-    width: 300,
-    height: 400,
+    height: 300,
     backgroundColor: "#000",
   },
 
