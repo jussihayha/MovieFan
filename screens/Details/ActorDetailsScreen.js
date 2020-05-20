@@ -45,7 +45,7 @@ export default function ActorDetailsScreen({ route, navigation }) {
                     onPress={() => {
                       navigation.navigate("Movie details", { movie: movie });
                     }}
-                    onLongPress={() => console.log(movie)}
+                    onLongPress={() => console.log({ movie: movie })}
                   />
                 );
               })}

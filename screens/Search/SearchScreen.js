@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ScrollView } from "react-native";
 import { useState } from "react";
-import { StyleSheet, View, Alert } from "react-native";
+import { StyleSheet, View, Alert, Switch } from "react-native";
 import { MOVIE_KEY } from "react-native-dotenv";
 import * as Localization from "expo-localization";
 import { en, fi } from "../../components/lang/Translations";
@@ -11,12 +11,23 @@ import { Button, Input, Text, ListItem } from "react-native-elements";
 export default function SearchScreen({ navigation }) {
   const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
-  console.log();
+  const [value, setValue] = useState(true);
+
+  console.log(value);
+
+  const searchStuff = () => {
+    if (value) {
+      getPeople();
+    } else {
+      getMovies();
+    }
+  };
+
   const getMovies = () => {
     if (query === null || query == "") {
-      Alert.alert("Query cannot be blank");
+      Alert.alert(i18n.t("query_blank"));
     } else {
-      const url = `https://api.themoviedb.org/3/search/movie?api_key=${MOVIE_KEY}&language=fi-FI&query=${query}&page=1&include_adult=false`;
+      const url = `https://api.themoviedb.org/3/search/movie?api_key=${MOVIE_KEY}&language=en-US&query=${query}&page=1&include_adult=false`;
       fetch(url)
         .then((response) => response.json())
         .then((responseJson) => {
@@ -30,9 +41,9 @@ export default function SearchScreen({ navigation }) {
 
   const getPeople = () => {
     if (query === null || query == "") {
-      Alert.alert("Query cannot be blank");
+      Alert.alert(i18n.t("query_blank"));
     } else {
-      const url = `https://api.themoviedb.org/3/search/movie?api_key=${MOVIE_KEY}&language=fi-FI&query=${query}&page=1&include_adult=false`;
+      const url = `https://api.themoviedb.org/3/search/person?api_key=${MOVIE_KEY}&language=en-US&query=${query}&page=1&include_adult=false`;
       fetch(url)
         .then((response) => response.json())
         .then((responseJson) => {
@@ -41,24 +52,41 @@ export default function SearchScreen({ navigation }) {
         .catch((error) => {
           Alert.alert(error.message);
         });
+      console.log(movies);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Movie finder</Text>
+      <View style={styles.header}>
+        <Text style={styles.header}>
+          {value
+            ? i18n.t("people_search_header")
+            : i18n.t("movie_search_header")}
+        </Text>
+        <View style={styles.toggle}>
+          <Text style={styles.text}>{i18n.t("movies")}</Text>
+          <Switch
+            value={value}
+            onValueChange={(value) => setValue(value)}
+            trackColor={{ false: "#fff", true: "#F6820D" }}
+          />
+          <Text style={styles.text}>{i18n.t("people")}</Text>
+        </View>
+      </View>
+
       <View style={styles.inputContainer}>
         <Input
-          placeholder="Find movies"
+          placeholder={value ? i18n.t("people") : i18n.t("movies")}
           value={query}
           onChangeText={(query) => setQuery(query)}
           style={styles.input}
           inputStyle={{ color: "white" }}
         />
         <Button
-          title="Search"
+          title={i18n.t("search")}
           buttonStyle={styles.button}
-          onPress={getMovies}
+          onPress={searchStuff}
         />
       </View>
       <View style={styles.cards}>
@@ -67,21 +95,30 @@ export default function SearchScreen({ navigation }) {
             return (
               <ListItem
                 key={index}
-                title={movie.title}
+                title={value ? movie.name : movie.title}
                 leftAvatar={{
                   source: {
-                    uri: `http://image.tmdb.org/t/p/original${movie.poster_path}`,
+                    uri: `http://image.tmdb.org/t/p/original${
+                      value ? movie.profile_path : movie.poster_path
+                    }`,
                   },
                 }}
                 rightSubtitle={
-                  movie.vote_average == "0,"
-                    ? `Rating: ${movie.vote_average}`
-                    : null
+                  value
+                    ? movie.known_for_department
+                    : `Rating: ${movie.vote_average}`
                 }
                 bottomDivider={true}
-                onPress={() =>
-                  navigation.navigate("Movie details", { movie: movie })
-                }
+                onPress={() => {
+                  value
+                    ? navigation.navigate("Actor details", {
+                        actor: movie.id,
+                        profile: movie.profile_path,
+                        known: movie.known_for,
+                        overview: movie.overview,
+                      })
+                    : navigation.navigate("Movie details", { movie: movie });
+                }}
                 onLongPress={() => console.log(movie)}
               />
             );
@@ -102,6 +139,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: "white",
     fontWeight: "bold",
+    backgroundColor: "#282D4F",
     marginTop: 20,
   },
 
@@ -126,5 +164,14 @@ const styles = StyleSheet.create({
   cards: {
     marginTop: "10%",
     flex: 1,
+  },
+  text: {
+    fontSize: 16,
+    color: "white",
+  },
+
+  toggle: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
 });
