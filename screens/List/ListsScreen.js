@@ -6,7 +6,6 @@ import firebase, { db } from "../../config/Firebase";
 
 import { en, fi } from "../../components/lang/Translations";
 import i18n from "i18n-js";
-import * as Localization from "expo-localization";
 
 export default function ListsScreen({ navigation }) {
   const [lists, setLists] = useState("");
@@ -16,6 +15,7 @@ export default function ListsScreen({ navigation }) {
   const user = firebase.auth().currentUser;
   const uid = user.uid;
   i18n.translations = { fi, en };
+
   useEffect(() => {
     getLists();
   }, []);
@@ -32,19 +32,18 @@ export default function ListsScreen({ navigation }) {
             list: child.val(),
           });
         });
-        
+
         setLists(data);
-        console.log(data);
       });
   };
 
   const deleteList = (list) => {
     Alert.alert(
-      "Confirm deletion",
-      `Are you sure you want to delete ${list.list.name}?`,
+      i18n.t("delete_title"),
+      `${i18n.t("confirm_deletion")} ${list.list.name}`,
 
       [
-        { text: "Cancel", style: "cancel" },
+        { text: i18n.t("cancel"), style: "cancel" },
         {
           text: "OK",
           onPress: () =>
@@ -58,20 +57,25 @@ export default function ListsScreen({ navigation }) {
   };
 
   const addList = () => {
-    let user = firebase.auth().currentUser;
-    let uid = user.uid;
+    if (name == "" || name == null) {
+      Alert.alert(i18n.t("list_blank"));
+    } else {
+      let user = firebase.auth().currentUser;
+      let uid = user.uid;
 
-    db.ref("users").child(uid).child("lists").push({
-      name: name,
-      movies: [],
-    });
+      db.ref("users").child(uid).child("lists").push({
+        name: name,
+        movies: [],
+      });
 
-    Alert.alert(`Added new list ${name}`);
+      Alert.alert(` ${i18n.t("new_list_added")} ${name}`);
+    }
+    setName("");
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Your lists</Text>
+      <Text style={styles.header}>{i18n.t("lists_header")}</Text>
       <View style={styles.inputContainer}>
         <Input
           placeholder={i18n.t("add_list")}
