@@ -1,5 +1,6 @@
 import * as React from "react";
-import { View, Switch, Text, Button, StyleSheet, Alert } from "react-native";
+import { View, Switch, Text, StyleSheet, Alert } from "react-native";
+import { Button } from "react-native-elements";
 import { useState, useEffect } from "react";
 import firebase, { db } from "../config/Firebase";
 
@@ -28,9 +29,9 @@ export default function SettingsScreen({}) {
         const data = snapshot.val();
         setLanguage(data.language);
         if (data.language == "fi") {
-          setValue(0);
+          setValue(false);
         } else {
-          setValue(1);
+          setValue(true);
         }
       });
   };
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "space-around",
-    backgroundColor: "black",
+    backgroundColor: "#282D4F",
     color: "white",
   },
 
