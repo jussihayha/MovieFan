@@ -40,7 +40,7 @@ export default function MovieDetailsScreen({ route, navigation }) {
   };
 
   const addToList = () => {
- 
+    console.log(list);
     db.ref("users")
       .child(uid)
       .child("lists")
@@ -83,7 +83,7 @@ export default function MovieDetailsScreen({ route, navigation }) {
           )}
         </Text>
       
-        {onList  ? (
+        {onList || lists == ""  ? (
          null
         ) : (<>
           <Picker
@@ -92,7 +92,7 @@ export default function MovieDetailsScreen({ route, navigation }) {
             selectedValue={list}
             itemStyle={{ color: "black" }}
             style={{ backgroundColor: "white" }}
-            onValueChange={(itemValue, itemIndex) => setList(itemValue)}
+            onValueChange={(list) => setList(list)}
           >
             {Object.values(lists).map((list, index) => {
               return (
