@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "space-around",
-    backgroundColor: "black",
+    backgroundColor: "#282D4F",
     color: "white",
   },
 
