@@ -3,6 +3,8 @@ import { View, StyleSheet, Alert } from "react-native";
 import { ListItem } from "react-native-elements";
 import { useEffect, useState } from "react";
 import firebase, { db } from "../../config/Firebase";
+import { en, fi } from "../../components/lang/Translations";
+import i18n from "i18n-js";
 
 export default function MovieListScreen({ navigation, route }) {
   const [movies, setMovies] = useState("");
@@ -10,12 +12,12 @@ export default function MovieListScreen({ navigation, route }) {
   const user = firebase.auth().currentUser;
   const uid = user.uid;
 
+  i18n.translations = { fi, en };
   useEffect(() => {
     getMovies();
   }, []);
 
   const getMovies = () => {
-
     db.ref("users")
       .child(uid)
       .child("lists/")
@@ -35,9 +37,28 @@ export default function MovieListScreen({ navigation, route }) {
   };
 
   const deleteMovie = (movie) => {
-    db.ref("users").child(uid).child("lists/").child(list.id).child("movies/").child(movie.id).remove();
-    Alert.alert(`Wanna delete ${movie.movie.title}`);
-    console.log(movie);
+    Alert.alert(
+      i18n.t("delete_title"),
+      `${i18n.t("confirm_deletion")} ${movie.movie.title}`,
+
+      [
+        { text: i18n.t("cancel"), style: "cancel" },
+        {
+          text: "OK",
+          onPress: () =>
+            db
+              .ref("users")
+              .child(uid)
+              .child("lists/")
+              .child(list.id)
+              .child("movies/")
+              .child(movie.id)
+              .remove(),
+        },
+      ],
+      { cancellable: true }
+    );
+
     getMovies();
   };
 
