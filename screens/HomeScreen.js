@@ -21,7 +21,7 @@ export default function HomeScreen({ navigation }) {
 
   useEffect(() => {
     getUser();
-  }, []);
+  }, [user]);
 
   const getUser = () => {
     db.ref("users")
