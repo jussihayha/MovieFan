@@ -1,11 +1,5 @@
 import * as React from "react";
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Alert,
-
-} from "react-native";
+import { View, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { useState } from "react";
 import firebase from "../../config/Firebase";
 import { Button, Text, Input } from "react-native-elements";
@@ -30,15 +24,14 @@ export default function LoginScreen({ navigation }) {
   }
 
   i18n.translations = { fi, en };
+  i18n.fallbacks = { en };
 
   async function login() {
     try {
-      await firebase
-        .auth()
-        .signInWithEmailAndPassword(email, password)
-
-        .catch((error) => Alert.alert(error));
-    } catch (e) {}
+      await firebase.auth().signInWithEmailAndPassword(email, password);
+    } catch (e) {
+      Alert.alert(e.message);
+    }
   }
 
   const togglePassword = () => {
@@ -130,10 +123,6 @@ const styles = StyleSheet.create({
     width: "85%",
     margin: 10,
     padding: 15,
-    fontSize: 16,
-
-    textAlign: "center",
-    color: "white",
   },
   button: {
     marginTop: 30,
