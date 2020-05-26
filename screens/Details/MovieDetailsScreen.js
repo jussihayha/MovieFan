@@ -1,7 +1,14 @@
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
-import { View, Text, StyleSheet, Image, ScrollView, Alert } from "react-native";
-import { Picker } from "@react-native-community/picker";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ScrollView,
+  Alert,
+  Picker,
+} from "react-native";
 
 import { MOVIE_KEY } from "react-native-dotenv";
 import { Button } from "react-native-elements";
@@ -40,15 +47,15 @@ export default function MovieDetailsScreen({ route, navigation }) {
   };
 
   const addToList = () => {
-    console.log(list);
     db.ref("users")
       .child(uid)
       .child("lists")
       .child(list)
       .child("movies")
       .push(movie);
-  };
 
+    Alert.alert(`${movie.title} added to list`);
+  };
 
   const getLists = () => {
     db.ref("users")
@@ -82,30 +89,31 @@ export default function MovieDetailsScreen({ route, navigation }) {
             movie.overview
           )}
         </Text>
-      
-        {onList || lists == ""  ? (
-         null
-        ) : (<>
-          <Picker
-            mode="modal"
-            style={{ height: 50, width: 200 }}
-            selectedValue={list}
-            itemStyle={{ color: "black" }}
-            style={{ backgroundColor: "white" }}
-            onValueChange={(list) => setList(list)}
-          >
-            {Object.values(lists).map((list, index) => {
-              return (
-                <Picker.Item
-                  key={index}
-                  label={list.list.name}
-                  value={list.id}
-                />
-              );
-            })}
-          </Picker>
-          
-        <Button title={i18n.t("add_to_list")} onPress={addToList} /></>)}
+
+        {onList || lists == "" ? null : (
+          <>
+            <Picker
+              mode="modal"
+              style={{ height: 50, width: 200 }}
+              selectedValue={list}
+              itemStyle={{ color: "black" }}
+              style={{ backgroundColor: "white" }}
+              onValueChange={(list) => setList(list)}
+            >
+              {Object.values(lists).map((list, index) => {
+                return (
+                  <Picker.Item
+                    key={index}
+                    label={list.list.name}
+                    value={list.id}
+                  />
+                );
+              })}
+            </Picker>
+
+            <Button title={i18n.t("add_to_list")} onPress={addToList} />
+          </>
+        )}
         {trailer == null ? (
           <Text style="list">No trailer available</Text>
         ) : (
