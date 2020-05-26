@@ -13,8 +13,6 @@ export default function SearchScreen({ navigation }) {
   const [movies, setMovies] = useState([]);
   const [value, setValue] = useState(true);
 
-  console.log(value);
-
   const searchStuff = () => {
     if (value) {
       getPeople();
@@ -52,7 +50,6 @@ export default function SearchScreen({ navigation }) {
         .catch((error) => {
           Alert.alert(error.message);
         });
-      console.log(movies);
     }
   };
 
@@ -116,6 +113,7 @@ export default function SearchScreen({ navigation }) {
                         profile: movie.profile_path,
                         known: movie.known_for,
                         overview: movie.overview,
+                        name: movie.name,
                       })
                     : navigation.navigate("Movie details", { movie: movie });
                 }}
