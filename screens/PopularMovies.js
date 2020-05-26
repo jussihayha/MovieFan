@@ -29,7 +29,7 @@ export default function PopularMovies({ navigation }) {
       setLoading(false);
     };
     fetchMovies();
-    console.log(movies);
+
   }, []);
 
   return (
