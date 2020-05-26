@@ -1,12 +1,12 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, Image } from "react-native";
 import { Text, ListItem } from "react-native-elements";
 import { MOVIE_KEY } from "react-native-dotenv";
 import { en, fi } from "../../components/lang/Translations";
 import i18n from "i18n-js";
 export default function ActorDetailsScreen({ route, navigation }) {
-  const { actor } = route.params;
+  const { actor, profile, overview, name } = route.params;
 
   const [actorDetails, setActorDetails] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,9 +25,19 @@ export default function ActorDetailsScreen({ route, navigation }) {
 
   return (
     <View style={{ backgroundColor: "#282D4F" }}>
-      <Text style={styles.header}>{i18n.t("popular_movies")}</Text>
+      <Text style={styles.header}>{name}</Text>
+
       <View style={styles.cards}>
         <ScrollView>
+          <Image
+            resizeMode="contain"
+            source={{
+              uri: `http://image.tmdb.org/t/p/original${profile}`,
+              height: 500,
+              width: 500,
+            }}
+          />
+          <Text>{overview}</Text>
           {loading
             ? null
             : actorDetails.map((movie, index) => {
@@ -40,12 +50,11 @@ export default function ActorDetailsScreen({ route, navigation }) {
                         uri: `http://image.tmdb.org/t/p/original${movie.poster_path}`,
                       },
                     }}
-                    rightSubtitle={movie.vote_average}
+                    rightSubtitle={`Rating ${movie.vote_average}`}
                     bottomDivider={true}
                     onPress={() => {
                       navigation.navigate("Movie details", { movie: movie });
                     }}
-                    onLongPress={() => console.log({ movie: movie })}
                   />
                 );
               })}
