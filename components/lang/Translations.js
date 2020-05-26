@@ -35,14 +35,15 @@ export const en = {
   people: "People",
   forgotPassword: "Forgot password?",
   reset_pw: "Enter your email to reset password",
-  password_message: "If you have registered with the email you have entered, check your mail.",
+  password_message:
+    "If you have registered with the email you have entered, check your mail.",
   reset_pw_btn: "Reset password",
   query_blank: "Query cannot be blank",
   list_blank: "List name cannot be blank",
   email_blank: "Email cannot be blank",
   delete_title: "Confirm deletion",
   confirm_deletion: "Are you sure you want to delete ",
-  cancel: "Cancel"
+  cancel: "Cancel",
 };
 
 export const fi = {
@@ -57,7 +58,7 @@ export const fi = {
   profile: "Profiili",
   welcome: "Tervetuloa",
   popular_movies: "Suosituimmat elokuvat",
-  popular_people: "Suosituimmat ihmiset",
+  popular_people: "Suosituimmat henkilöt",
   start: "Alku",
   home: "Koti",
   search: "Haku",
@@ -91,6 +92,3 @@ export const fi = {
   confirm_deletion: "Haluatko varmasti poistaa ",
   cancel: "Peruuta",
 };
-
-
-
