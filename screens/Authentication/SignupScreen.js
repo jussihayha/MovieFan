@@ -19,27 +19,30 @@ export default function SignupScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [language, setLanguage] = useState("en");
-  const [errorMessage, setErrorMessage] = useState("");
+
   const [value, setValue] = useState(true);
   const [toggle, setToggle] = useState(true);
 
-  const handleSignUp = () => {
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then((userCredentials) => {
-        let uid = userCredentials.user.uid;
+  async function handleSignUp() {
+    try {
+      await firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then((userCredentials) => {
+          let uid = userCredentials.user.uid;
 
-        db.ref("users").child(uid).child("details").set({
-          firstname: firstname,
-          lastname: lastname,
-          mode: "light",
-          language: language,
-        });
-      })
-      .then(() => navigation.navigate("Login"))
-      .catch((error) => setErrorMessage(error.message));
-  };
+          db.ref("users").child(uid).child("details").set({
+            firstname: firstname,
+            lastname: lastname,
+            mode: "light",
+            language: language,
+          });
+        })
+        .then(() => navigation.navigate("Login"));
+    } catch (e) {
+      Alert.alert(e.message);
+    }
+  }
 
   const changeLanguage = (value) => {
     setValue(value);
@@ -63,7 +66,7 @@ export default function SignupScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>{i18n.t("register")}</Text>
-      {errorMessage == "" ? null : Alert.alert({ errorMessage })}
+
       <Input
         containerStyle={styles.inputBox}
         value={firstname}
