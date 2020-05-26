@@ -30,7 +30,7 @@ export default function PopularPeople({ navigation }) {
     };
     fetchPeople();
   }, []);
-  console.log(people);
+
   return (
     <View style={{ backgroundColor: "#282D4F" }}>
       <Text style={styles.header}>{i18n.t("popular_people")}</Text>
@@ -46,6 +46,7 @@ export default function PopularPeople({ navigation }) {
                       profile: actor.profile_path,
                       known: actor.known_for,
                       overview: actor.overview,
+                      name: actor.name,
                     })
                   }
                   key={index}
